@@ -1,0 +1,99 @@
+# =====================================================================
+#  A.R.E Rekond – paket, tillval och priser
+#
+#  - Priser anges i hela kronor inkl. moms, t.ex.  liten: 1495
+#  - "null" = pris saknas → sajten visar "[FYLL I: pris]" och
+#    prisräknaren visar "Pris enligt offert".
+#  - Paketinnehållet nedan är ETT FÖRSLAG – kontrollera att det stämmer
+#    med vad ni faktiskt gör innan sajten publiceras (se TODO.md).
+# =====================================================================
+
+# Bilstorlekar (id används internt – ändra bara "namn" och "exempel").
+storlekar:
+  - id: liten
+    namn: "Småbil"
+    exempel: "t.ex. VW Polo, Toyota Yaris"
+  - id: mellan
+    namn: "Mellanklass"
+    exempel: "t.ex. VW Golf, Volvo V60"
+  - id: suv
+    namn: "SUV / stor kombi"
+    exempel: "t.ex. Volvo XC90, Tesla Model Y"
+  - id: transport
+    namn: "Transportbil"
+    exempel: "t.ex. VW Transporter, Ford Transit"
+
+paket:
+  - id: bas
+    namn: "Bas"
+    kort: "Fräsch bil, in- och utvändigt."
+    utvald: false
+    tid: "[FYLL I: tidsåtgång]"
+    ingar:
+      - "Handtvätt utvändigt"
+      - "Fälgtvätt"
+      - "Dammsugning av kupé och bagageutrymme"
+      - "Avtorkning av instrumentbräda och paneler"
+      - "Rengöring av rutor in- och utvändigt"
+    priser: { liten: null, mellan: null, suv: null, transport: null }
+
+  - id: premium
+    namn: "Premium"
+    kort: "Vår helrekond – för bilen du vill känna dig stolt över."
+    utvald: true
+    tid: "[FYLL I: tidsåtgång]"
+    ingar:
+      - "Allt i Bas"
+      - "Avfettning och lackrengöring (clay)"
+      - "Djuprengöring av klädsel och mattor"
+      - "Rengöring av dörrfalsar"
+      - "Plast- och gummibehandling"
+      - "Vax för glans och skydd"
+    priser: { liten: null, mellan: null, suv: null, transport: null }
+
+  - id: lyx
+    namn: "Lyx"
+    kort: "Showroom-finish med polering och långvarigt skydd."
+    utvald: false
+    tid: "[FYLL I: tidsåtgång]"
+    ingar:
+      - "Allt i Premium"
+      - "Maskinpolering av lack"
+      - "Lackskydd / försegling"
+      - "Läderrengöring och läderbehandling"
+      - "Motorrumstvätt"
+    priser: { liten: null, mellan: null, suv: null, transport: null }
+
+# Tillval – kan bokas separat eller läggas till ett paket.
+# "kategori" används för filtrering och gruppering.
+tillval:
+  - id: polering
+    namn: "Maskinpolering"
+    beskrivning: "Tar bort fina repor och virvelmärken och ger lacken djup glans."
+    tid: "[FYLL I: tidsåtgång]"
+    priser: { liten: null, mellan: null, suv: null, transport: null }
+  - id: coating
+    namn: "Keramisk coating"
+    beskrivning: "Hårt, vattenavvisande skydd som gör bilen lättare att hålla ren."
+    tid: "[FYLL I: tidsåtgång]"
+    priser: { liten: null, mellan: null, suv: null, transport: null }
+  - id: kladsel
+    namn: "Klädselrengöring"
+    beskrivning: "Djuprengöring av säten och textilier – fläckar och lukt bort."
+    tid: "[FYLL I: tidsåtgång]"
+    priser: { liten: null, mellan: null, suv: null, transport: null }
+  - id: motortvatt
+    namn: "Motortvätt"
+    beskrivning: "Skonsam rengöring av motorrummet."
+    tid: "[FYLL I: tidsåtgång]"
+    priser: { liten: null, mellan: null, suv: null, transport: null }
+  - id: stralkastare
+    namn: "Strålkastarrenovering"
+    beskrivning: "Gulnade, matta lyktor blir klara igen – snyggare och bättre ljus."
+    tid: "[FYLL I: tidsåtgång]"
+    pris: null          # Samma pris oavsett bilstorlek
+  - id: saljrekond
+    namn: "Säljrekond"
+    beskrivning: "Gör bilen redo för försäljning – första intrycket säljer."
+    tid: "[FYLL I: tidsåtgång]"
+    priser: { liten: null, mellan: null, suv: null, transport: null }

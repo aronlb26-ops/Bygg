@@ -1,0 +1,89 @@
+---
+import Icon from './Icon.astro';
+import Txt from './Txt.astro';
+import { tjanster, fromPrice, formatPrice, isFilled, bookingUrl, bookingIsExternal } from '../lib/site';
+
+const ext = bookingIsExternal ? { target: '_blank', rel: 'noopener' } : {};
+const MAX_ITEMS = 5;
+---
+<div class="pkgs">
+  {tjanster.paket.map((p, i) => {
+    const from = fromPrice(p.priser);
+    return (
+      <article class:list={['card pkg reveal', { 'pkg--featured': p.utvald }]} style={`--delay:${i * 0.08}s`} aria-labelledby={`pkg-${p.id}`}>
+        {p.utvald && <span class="pkg__tag">Vårt tips</span>}
+        <h3 id={`pkg-${p.id}`} class="pkg__name">{p.namn}</h3>
+        <p class="pkg__desc">{p.kort}</p>
+        <p class="pkg__price">
+          {from !== null ? <><span class="pkg__from">från</span> {formatPrice(from)}</> : <Txt value="[FYLL I: pris]" />}
+        </p>
+        <p class="pkg__time"><Icon name="clock" size={16} /> <Txt value={p.tid} /></p>
+        <ul class="pkg__list">
+          {p.ingar.slice(0, MAX_ITEMS).map((item) => <li><Icon name="check" size={18} />{item}</li>)}
+          {p.ingar.length > MAX_ITEMS && <li class="pkg__more">+ {p.ingar.length - MAX_ITEMS} till</li>}
+        </ul>
+        <div class="pkg__ctas">
+          <a class:list={['btn', { 'btn--ghost': !p.utvald }]} href={bookingIsExternal ? bookingUrl : `/boka/?paket=${p.id}`} {...ext}>
+            Boka {p.namn}
+          </a>
+          <a class="pkg__link" href={`/tjanster/#${p.id}`}>Allt som ingår <Icon name="arrow" size={16} /></a>
+        </div>
+      </article>
+    );
+  })}
+</div>
+
+<p class="pkgs__addons reveal">
+  <span>Tillval:</span>
+  {tjanster.tillval.map((t, i) => (
+    <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/tjanster/#${t.id}`}>{t.namn}</a></>
+  ))}
+</p>
+<p class="pkgs__note reveal">Priset beror på bilens storlek och skick. Du ser ett uppskattat pris direkt när du bokar.</p>
+
+<style>
+  .pkgs {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    align-items: stretch;
+  }
+  .pkg { display: flex; flex-direction: column; }
+  .pkg--featured {
+    border-color: rgb(46 139 255 / 0.6);
+    background:
+      radial-gradient(120% 80% at 100% 0%, rgb(46 139 255 / 0.18) 0%, transparent 60%),
+      linear-gradient(160deg, var(--surface-2) 0%, var(--surface) 60%);
+  }
+  .pkg__tag {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    padding: 0.3em 0.8em;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .pkg__name { font-size: 2rem; font-stretch: 112%; margin-bottom: 0.25rem; }
+  .pkg__desc { color: var(--muted); min-height: 3.3em; }
+  .pkg__price { font-family: var(--font-head); font-size: 1.6rem; font-weight: 800; margin-bottom: 0.25rem; }
+  .pkg__from { font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; color: var(--muted); }
+  .pkg__time { display: flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.9rem; }
+  .pkg__list { list-style: none; margin: 0.5rem 0 1.75rem; padding: 1.25rem 0 0; border-top: 1px solid var(--line); flex: 1; }
+  .pkg__list li { display: flex; gap: 0.6rem; margin-bottom: 0.55rem; font-size: 0.97rem; }
+  .pkg__list :global(svg) { flex: none; margin-top: 0.2em; color: var(--accent-hi); }
+  .pkg__more { color: var(--muted); padding-left: 1.7rem; }
+  .pkg__ctas { display: grid; justify-items: center; gap: 1rem; }
+  .pkg__ctas .btn { width: 100%; }
+  .pkg__link { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 600; text-decoration: none; }
+
+  .pkgs__addons { margin-top: 2rem; color: var(--muted); text-align: center; }
+  .pkgs__addons > span:first-child { color: var(--text); font-weight: 600; margin-right: 0.35rem; }
+  .pkgs__addons a { color: var(--muted); }
+  .pkgs__addons a:hover { color: var(--text); }
+  .pkgs__note { color: var(--muted); font-size: 0.9rem; text-align: center; margin: 0; }
+</style>

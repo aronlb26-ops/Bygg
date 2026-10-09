@@ -1,0 +1,118 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import Txt from './Txt.astro';
+import { foretag, nav, phone, socials, isFilled } from '../lib/site';
+
+const k = foretag.kontakt;
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <Logo />
+      <p>Bilrekond, polering och lackskydd i <Txt value={foretag.ort} />.</p>
+      {socials.length > 0 && (
+        <ul class="footer__social" aria-label="Sociala medier">
+          {socials.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener" aria-label={`${foretag.namn} på ${s.name}`}>
+                <Icon name={s.name as 'instagram'} size={20} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+
+    <div>
+      <h2 class="footer__h">Kontakt</h2>
+      <ul class="footer__list">
+        <li>
+          <Icon name="phone" size={18} />
+          {phone.href ? <a href={phone.href}>{phone.display}</a> : <Txt value={k.telefon} />}
+        </li>
+        <li>
+          <Icon name="mail" size={18} />
+          {isFilled(k.epost) ? <a href={`mailto:${k.epost}`}>{k.epost}</a> : <Txt value={k.epost} />}
+        </li>
+        <li>
+          <Icon name="pin" size={18} />
+          <span><Txt value={k.adress.gata} />, <Txt value={k.adress.postnummer} /> <Txt value={k.adress.ort} /></span>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer__h">Öppettider</h2>
+      <dl class="footer__hours">
+        {foretag.oppettider.map((o: { dagar: string; tider: string }) => (
+          <div><dt>{o.dagar}</dt><dd><Txt value={o.tider} /></dd></div>
+        ))}
+      </dl>
+    </div>
+
+    <nav aria-label="Sidfotsmeny">
+      <h2 class="footer__h">Sidor</h2>
+      <ul class="footer__links">
+        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        <li><a href="/integritetspolicy/">Integritetspolicy & cookies</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="wrap footer__bottom">
+    <p>© {year} {foretag.namn} · Org.nr <Txt value={foretag.org_nr} /></p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    background: #08090b;
+    padding-top: clamp(3rem, 7vw, 5rem);
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  .footer__grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  .footer__brand p { margin-top: 1rem; max-width: 32ch; }
+  .footer__h {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .footer__list, .footer__links, .footer__social { list-style: none; margin: 0; padding: 0; }
+  .footer__list li { display: flex; gap: 0.6rem; align-items: flex-start; margin-bottom: 0.7rem; }
+  .footer__list :global(svg) { flex: none; margin-top: 0.25em; color: var(--accent-hi); }
+  .footer__links li { margin-bottom: 0.5rem; }
+  .footer a { color: var(--muted); text-decoration: none; }
+  .footer a:hover { color: var(--text); text-decoration: underline; }
+  .footer__hours { margin: 0; }
+  .footer__hours div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+  .footer__hours dd { margin: 0; color: var(--text); }
+  .footer__social { display: flex; gap: 0.5rem; margin-top: 1.25rem; }
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+  }
+  .footer__social a:hover { border-color: var(--accent); color: var(--text); }
+  .footer__bottom {
+    margin-top: 3rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.85rem;
+  }
+  .footer__bottom p { margin: 0; }
+</style>

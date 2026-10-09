@@ -1,0 +1,52 @@
+# =====================================================================
+#  A.R.E Rekond – företagsuppgifter
+#  Ändra värdena här så uppdateras hela sajten (sidhuvud, sidfot,
+#  kontaktsidor, Google-data/JSON-LD m.m.).
+#
+#  Allt som börjar med "[FYLL I" är en platshållare och visas som
+#  sådan på sajten tills du byter ut den. Se även TODO.md.
+# =====================================================================
+
+namn: "A.R.E Rekond"          # Skrivs alltid exakt så här.
+org_nr: "[FYLL I: org.nr]"
+
+# Huvudort – används i rubriker och sökord ("rekond i <ort>").
+ort: "[FYLL I: ort]"
+# Orter/område ni tar uppdrag i (visas i text och i Google-data).
+upptagningsomrade: "[FYLL I: upptagningsområde, t.ex. orter i närheten]"
+
+kontakt:
+  telefon: "[FYLL I: telefonnummer]"       # Visningsformat, t.ex. "070-123 45 67"
+  telefon_e164: ""                          # För klickbar länk, t.ex. "+46701234567"
+  epost: "[FYLL I: e-post]"
+  adress:
+    gata: "[FYLL I: gatuadress]"
+    postnummer: "[FYLL I: postnummer]"
+    ort: "[FYLL I: ort]"
+
+# Öppettider. "tider" lämnas som platshållare tills de är bestämda.
+# Format för Google-data (valfritt): "Mo-Fr 08:00-17:00".
+oppettider:
+  - dagar: "Måndag–fredag"
+    tider: "[FYLL I]"
+  - dagar: "Lördag"
+    tider: "[FYLL I]"
+  - dagar: "Söndag"
+    tider: "[FYLL I]"
+oppettider_schema: []   # t.ex. ["Mo-Fr 08:00-17:00", "Sa 10:00-14:00"]
+
+# Hämta & lämna: true = ja, false = nej, null = inte bestämt (döljs).
+hamta_lamna: null
+
+kundgrupper: "[FYLL I: privatpersoner / företag / bilhandlare / leasingretur]"
+
+sociala_medier:
+  instagram: ""   # t.ex. "https://www.instagram.com/..."
+  facebook: ""
+  tiktok: ""
+
+# Hero på startsidan. Lägg en video i public/video/ och ange sökvägen
+# (t.ex. "/video/hero.mp4") för att visa video i stället för bild.
+hero:
+  video_mp4: ""
+  video_webm: ""

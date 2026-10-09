@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import Txt from './Txt.astro';
+import heroImg from '../assets/placeholders/hero.jpg';
+import { foretag, bookingUrl, bookingIsExternal, isFilled } from '../lib/site';
+
+// Byt bild: lägg en egen bild i src/assets/ och ändra importen ovan,
+// och sätt HERO_IS_PLACEHOLDER till false.
+const HERO_IS_PLACEHOLDER = true;
+const video = foretag.hero ?? {};
+const hasVideo = isFilled(video.video_mp4) || isFilled(video.video_webm);
+const ext = bookingIsExternal ? { target: '_blank', rel: 'noopener' } : {};
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__media">
+    <Image
+      src={heroImg}
+      alt=""
+      widths={[640, 960, 1400, 1920, 2400]}
+      sizes="100vw"
+      format="webp"
+      loading="eager"
+      fetchpriority="high"
+      class="hero__img"
+    />
+    {hasVideo && (
+      <video class="hero__video" autoplay muted loop playsinline preload="none" aria-hidden="true" data-hero-video>
+        {isFilled(video.video_webm) && <source src={video.video_webm} type="video/webm" />}
+        {isFilled(video.video_mp4) && <source src={video.video_mp4} type="video/mp4" />}
+      </video>
+    )}
+    {HERO_IS_PLACEHOLDER && !hasVideo && <span class="ph-badge">Platshållarbild – byt mot egen bild/video</span>}
+  </div>
+
+  <div class="wrap hero__content">
+    <p class="eyebrow reveal">Bilrekond i <Txt value={foretag.ort} /></p>
+    <h1 id="hero-title" class="reveal" style="--delay:.08s">
+      Glans som syns.<br /><span class="hero__accent">Känsla som håller.</span>
+    </h1>
+    <p class="lead reveal" style="--delay:.16s">
+      Rekond, polering och keramisk coating för dig som vill att bilen ska se ut
+      som ny, och kännas så också. Personligt, noggrant och med tydliga priser.
+    </p>
+    <div class="hero__ctas reveal" style="--delay:.24s">
+      <a class="btn" href={bookingUrl} {...ext}>
+        <Icon name="calendar" /> Boka tid
+      </a>
+      <a class="btn btn--ghost" href="#paket">Se paket & priser</a>
+    </div>
+
+    <ul class="hero__points reveal" style="--delay:.32s">
+      <li><Icon name="tag" size={18} /> Paketpriser per bilstorlek</li>
+      <li><Icon name="clock" size={18} /> Se uppskattat pris när du bokar</li>
+      {foretag.hamta_lamna === true && <li><Icon name="car" size={18} /> Hämta & lämna</li>}
+    </ul>
+  </div>
+</section>
+
+<script>
+  // Spela bara upp herovideo om användaren inte valt reducerad rörelse
+  // och inte har "spara data" påslaget.
+  const v = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+  if (v) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as any).connection?.saveData;
+    if (reduce || saveData) v.remove();
+    else v.addEventListener('canplay', () => v.classList.add('is-ready'), { once: true });
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    min-height: min(100svh - var(--header-h), 900px);
+    display: flex;
+    align-items: flex-end;
+    margin-top: calc(-1 * var(--header-h));
+    padding: calc(var(--header-h) + 4rem) 0 clamp(3rem, 8vw, 6rem);
+    overflow: hidden;
+  }
+  .hero__media { position: absolute; inset: 0; z-index: -1; }
+  .hero__img, .hero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__video { opacity: 0; transition: opacity 1s; }
+  .hero__video.is-ready { opacity: 1; }
+  .hero__media::after {
+    /* Mörk toning för läsbar text oavsett bild */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgb(11 12 14 / 0.35) 0%, rgb(11 12 14 / 0.2) 40%, rgb(11 12 14 / 0.92) 100%),
+      linear-gradient(90deg, rgb(11 12 14 / 0.75) 0%, transparent 70%);
+  }
+  .hero .ph-badge { top: calc(var(--header-h) + 0.75rem); }
+
+  .hero__content { max-width: var(--wrap); }
+  .hero h1 { max-width: 14ch; margin-bottom: 1.5rem; }
+  .hero__accent {
+    background: linear-gradient(100deg, #fff 0%, var(--accent-hi) 45%, #fff 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero .lead { color: #d3d8e0; margin-bottom: 2rem; }
+  .hero__ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .hero__points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    color: #d3d8e0;
+    font-size: 0.95rem;
+  }
+  .hero__points li { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .hero__points :global(svg) { color: var(--accent-hi); }
+
+  @media (max-width: 560px) {
+    .hero__ctas .btn { flex: 1 1 100%; }
+  }
+</style>

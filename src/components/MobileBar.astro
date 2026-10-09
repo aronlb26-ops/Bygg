@@ -1,0 +1,56 @@
+---
+/** Fast knapprad på mobil: Ring + Boka. */
+import Icon from './Icon.astro';
+import { phone, bookingUrl, bookingIsExternal } from '../lib/site';
+const ext = bookingIsExternal ? { target: '_blank', rel: 'noopener' } : {};
+---
+<div class="mbar" aria-label="Snabbkontakt" role="region">
+  {phone.href ? (
+    <a class="mbar__btn mbar__btn--ghost" href={phone.href}>
+      <Icon name="phone" size={20} /> Ring
+    </a>
+  ) : (
+    <a class="mbar__btn mbar__btn--ghost" href="/boka/#kontakt">
+      <Icon name="phone" size={20} /> Ring
+    </a>
+  )}
+  <a class="mbar__btn" href={bookingUrl} {...ext}>
+    <Icon name="calendar" size={20} /> Boka tid
+  </a>
+</div>
+
+<style>
+  .mbar { display: none; }
+  @media (max-width: 860px) {
+    .mbar {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 60;
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 0.6rem;
+      padding: 0.6rem var(--gutter) calc(0.6rem + env(safe-area-inset-bottom));
+      background: rgb(11 12 14 / 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--line);
+    }
+  }
+  .mbar__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 52px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .mbar__btn--ghost {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--line);
+  }
+</style>

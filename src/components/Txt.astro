@@ -1,0 +1,9 @@
+---
+/**
+ * Skriver ut text och markerar "[FYLL I: …]"-platshållare tydligt,
+ * så att de syns på sajten tills riktig info finns.
+ */
+interface Props { value: unknown }
+const parts = String(Astro.props.value ?? '').split(/(\[FYLL I[^\]]*\])/g).filter(Boolean);
+---
+{parts.map((p) => (p.startsWith('[FYLL I') ? <em class="fill">{p}</em> : p))}

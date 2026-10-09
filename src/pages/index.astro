@@ -1,0 +1,188 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import PackageOverview from '../components/PackageOverview.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
+import ContactCta from '../components/ContactCta.astro';
+import Icon from '../components/Icon.astro';
+import Txt from '../components/Txt.astro';
+import { foretag, isFilled } from '../lib/site';
+
+import fore from '../assets/placeholders/fore.jpg';
+import efter from '../assets/placeholders/efter.jpg';
+import ig1 from '../assets/placeholders/ig-1.jpg';
+import ig2 from '../assets/placeholders/ig-2.jpg';
+import ig3 from '../assets/placeholders/ig-3.jpg';
+import ig4 from '../assets/placeholders/ig-4.jpg';
+import ig5 from '../assets/placeholders/ig-5.jpg';
+import ig6 from '../assets/placeholders/ig-6.jpg';
+
+const ort = isFilled(foretag.ort) ? foretag.ort : '';
+const title = ort
+  ? `Bilrekond & keramisk coating i ${ort}`
+  : 'Bilrekond, polering & keramisk coating';
+const description = `${foretag.namn} – professionell rekond, polering och keramisk coating${ort ? ` i ${ort}` : ''}. Tydliga paketpriser per bilstorlek. Boka tid online.`;
+
+// "Varför välja oss" – granska så att varje punkt stämmer för er (se TODO.md).
+const reasons = [
+  { icon: 'hand', title: 'Hantverk, inte löpande band', text: 'Varje bil får den tid den behöver. Vi jobbar för hand och i detalj, från fälgar till dörrfalsar.' },
+  { icon: 'tag', title: 'Tydliga priser', text: 'Fasta paket per bilstorlek och ett uppskattat pris redan när du bokar. Inga överraskningar.' },
+  { icon: 'shield', title: 'Rätt produkt för rätt yta', text: 'Lack, läder, plast och textil kräver olika behandling. Vi väljer metod efter din bil och berättar gärna vad vi använder.' },
+  { icon: 'sparkle', title: 'Personlig service', text: 'Du pratar med oss som gör jobbet. Vi lyssnar på vad du vill uppnå och säger ärligt vad som går att få till.' },
+] as const;
+
+// Instagram-platshållare. Se README för hur ett riktigt flöde kopplas in.
+const igImages = [ig1, ig2, ig3, ig4, ig5, ig6];
+const instagram = foretag.sociala_medier?.instagram;
+---
+<Base title={title} description={description}>
+  <Hero />
+
+  <!-- Paket -->
+  <section id="paket" class="section" aria-labelledby="paket-title">
+    <div class="wrap">
+      <div class="section-head section-head--center reveal">
+        <span class="eyebrow">Paket & priser</span>
+        <h2 id="paket-title">Välj nivå. Vi gör resten.</h2>
+        <p class="lead">Tre tydliga paket, från en grundlig fräschning till showroom-finish med lackskydd. Komplettera med tillval efter behov.</p>
+      </div>
+      <PackageOverview />
+    </div>
+  </section>
+
+  <!-- Före/efter -->
+  <section class="section section--alt" aria-labelledby="ba-title">
+    <div class="wrap ba-grid">
+      <div class="section-head reveal">
+        <span class="eyebrow">Före & efter</span>
+        <h2 id="ba-title">Skillnaden ser du direkt.</h2>
+        <p class="lead">Dra i reglaget och jämför. Matt, smutsig lack blir djup och blank igen, med skydd som gör bilen lättare att hålla ren.</p>
+        <a class="btn btn--ghost" href="/galleri/">Se fler före/efter <Icon name="arrow" size={18} /></a>
+      </div>
+      <div class="reveal" style="--delay:.1s">
+        <BeforeAfter before={fore} after={efter} alt="[FYLL I: beskriv bilen och behandlingen]" placeholder sizes="(min-width: 1000px) 700px, 100vw" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Varför välja oss -->
+  <section class="section" aria-labelledby="why-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Varför {foretag.namn}</span>
+        <h2 id="why-title">Vi behandlar din bil som om den vore vår egen.</h2>
+      </div>
+      <div class="why">
+        {reasons.map((r, i) => (
+          <div class="why__item reveal" style={`--delay:${i * 0.08}s`}>
+            <span class="why__icon"><Icon name={r.icon} size={26} /></span>
+            <h3>{r.title}</h3>
+            <p>{r.text}</p>
+          </div>
+        ))}
+        {foretag.hamta_lamna === true && (
+          <div class="why__item reveal">
+            <span class="why__icon"><Icon name="car" size={26} /></span>
+            <h3>Hämta & lämna</h3>
+            <p>Vi kan hämta bilen och lämna tillbaka den när den är klar. Fråga när du bokar.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Omdömen (platshållare – inga påhittade omdömen) -->
+  <section class="section section--alt" aria-labelledby="reviews-title">
+    <div class="wrap">
+      <div class="section-head section-head--center reveal">
+        <span class="eyebrow">Omdömen</span>
+        <h2 id="reviews-title">Vad våra kunder säger</h2>
+      </div>
+      <div class="reviews">
+        {[1, 2, 3].map((n, i) => (
+          <figure class="card review reveal" style={`--delay:${i * 0.08}s`}>
+            <blockquote>
+              <p><Txt value={`[FYLL I: kundomdöme ${n} – riktigt citat, med kundens godkännande]`} /></p>
+            </blockquote>
+            <figcaption><Txt value="[FYLL I: förnamn, ort]" /></figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Instagram (platshållare) -->
+  <section class="section" aria-labelledby="ig-title">
+    <div class="wrap">
+      <div class="ig-head reveal">
+        <div>
+          <span class="eyebrow">Instagram</span>
+          <h2 id="ig-title">Senaste jobben</h2>
+        </div>
+        {isFilled(instagram) ? (
+          <a class="btn btn--ghost" href={instagram} target="_blank" rel="noopener">
+            <Icon name="instagram" /> Följ oss på Instagram
+          </a>
+        ) : (
+          <p class="ig-head__ph"><Icon name="instagram" size={20} /> <Txt value="[FYLL I: Instagram-länk]" /></p>
+        )}
+      </div>
+      <ul class="ig">
+        {igImages.map((img, i) => (
+          <li class="ig__item reveal" style={`--delay:${(i % 3) * 0.06}s`}>
+            <Image src={img} alt="" widths={[300, 450, 600]} sizes="(min-width: 1000px) 200px, 33vw" format="webp" />
+            {i === 0 && <span class="ph-badge">Platshållare</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <ContactCta />
+</Base>
+
+<style>
+  .ba-grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 1000px) {
+    .ba-grid { grid-template-columns: 0.8fr 1.2fr; gap: 4rem; }
+    .ba-grid .section-head { margin-bottom: 0; }
+  }
+
+  .why { display: grid; gap: 1px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
+  .why__item { background: var(--bg); padding: clamp(1.5rem, 3vw, 2.25rem); }
+  .why__item p { color: var(--muted); margin: 0; }
+  .why__icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin-bottom: 1.25rem;
+    border-radius: 14px;
+    color: var(--accent-hi);
+    background: rgb(46 139 255 / 0.1);
+    border: 1px solid rgb(46 139 255 / 0.3);
+  }
+
+  .reviews { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+  .review { margin: 0; }
+  .review blockquote { margin: 0 0 1.25rem; font-size: 1.1rem; }
+  .review blockquote::before {
+    content: '\201D';
+    display: block;
+    font-family: var(--font-head);
+    font-size: 4rem;
+    line-height: 0.8;
+    color: var(--accent);
+  }
+  .review figcaption { color: var(--muted); font-size: 0.95rem; }
+
+  .ig-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem 2rem; margin-bottom: 2rem; }
+  .ig-head h2 { margin: 0; }
+  .ig-head__ph { display: flex; align-items: center; gap: 0.5rem; margin: 0; }
+  .ig { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; list-style: none; margin: 0; padding: 0; }
+  @media (min-width: 1000px) { .ig { grid-template-columns: repeat(6, 1fr); } }
+  .ig__item { position: relative; aspect-ratio: 1; overflow: hidden; border-radius: 10px; }
+  .ig__item :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease); }
+  @media (hover: hover) { .ig__item:hover :global(img) { transform: scale(1.06); } }
+</style>

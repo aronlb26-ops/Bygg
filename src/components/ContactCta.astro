@@ -1,0 +1,62 @@
+---
+import Icon from './Icon.astro';
+import Txt from './Txt.astro';
+import { foretag, phone, bookingUrl, bookingIsExternal } from '../lib/site';
+
+interface Props { title?: string; text?: string }
+const {
+  title = 'Redo att få bilen att glänsa igen?',
+  text = 'Boka en tid direkt, eller ring så hjälper vi dig att välja rätt behandling för din bil.',
+} = Astro.props;
+const ext = bookingIsExternal ? { target: '_blank', rel: 'noopener' } : {};
+---
+<section class="section cta" aria-labelledby="cta-title">
+  <div class="wrap">
+    <div class="cta__box reveal">
+      <div>
+        <h2 id="cta-title">{title}</h2>
+        <p class="lead">{text}</p>
+      </div>
+      <div class="cta__actions">
+        <a class="btn" href={bookingUrl} {...ext}><Icon name="calendar" /> Boka tid</a>
+        {phone.href ? (
+          <a class="btn btn--ghost" href={phone.href}><Icon name="phone" /> {phone.display}</a>
+        ) : (
+          <span class="cta__phone"><Icon name="phone" /> <Txt value={foretag.kontakt.telefon} /></span>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta__box {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+    padding: clamp(2rem, 6vw, 4rem);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(46 139 255 / 0.35);
+    background:
+      radial-gradient(80% 120% at 100% 0%, rgb(46 139 255 / 0.28) 0%, transparent 60%),
+      radial-gradient(60% 80% at 0% 100%, rgb(46 139 255 / 0.12) 0%, transparent 60%),
+      var(--surface);
+  }
+  .cta__box::after {
+    /* Diagonal glansreflex */
+    content: '';
+    position: absolute;
+    inset: -50% -10%;
+    background: linear-gradient(115deg, transparent 42%, rgb(255 255 255 / 0.06) 50%, transparent 58%);
+    pointer-events: none;
+  }
+  .cta__box h2 { margin-bottom: 0.4em; }
+  .cta__box .lead { margin: 0; }
+  .cta__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; position: relative; z-index: 1; }
+  .cta__phone { display: inline-flex; align-items: center; gap: 0.5rem; }
+  @media (min-width: 900px) {
+    .cta__box { grid-template-columns: 1.4fr auto; }
+  }
+</style>

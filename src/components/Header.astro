@@ -1,0 +1,168 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { nav, phone, bookingUrl, bookingIsExternal } from '../lib/site';
+
+const path = Astro.url.pathname;
+const ext = bookingIsExternal ? { target: '_blank', rel: 'noopener' } : {};
+---
+<header class="header" data-header>
+  <div class="wrap header__inner">
+    <Logo />
+
+    <nav class="nav" id="huvudmeny" aria-label="Huvudmeny" data-nav>
+      <ul>
+        {nav.map((item) => (
+          <li>
+            <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      {phone.href && (
+        <a class="header__phone" href={phone.href}>
+          <Icon name="phone" size={18} />
+          <span>{phone.display}</span>
+        </a>
+      )}
+      <a class="btn header__cta" href={bookingUrl} {...ext}>Boka tid</a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="huvudmeny"
+        data-menu-toggle
+      >
+        <Icon name="menu" class="i-open" />
+        <Icon name="close" class="i-close" />
+        <span class="sr-only">Meny</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const nav = document.querySelector<HTMLElement>('[data-nav]')!;
+
+  const setOpen = (open: boolean) => {
+    toggle.setAttribute('aria-expanded', String(open));
+    header.classList.toggle('is-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  nav.addEventListener('click', (e) => { if ((e.target as Element).closest('a')) setOpen(false); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && header.classList.contains('is-open')) { setOpen(false); toggle.focus(); }
+  });
+
+  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 10);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--header-h);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  /* Blur på pseudo-element: backdrop-filter direkt på headern skulle
+     bryta position: fixed för mobilmenyn. */
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(11 12 14 / 0.55);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    transition: background 0.3s;
+  }
+  .header.is-scrolled { border-color: var(--line); }
+  .header.is-scrolled::before, .header.is-open::before { background: rgb(11 12 14 / 0.94); }
+  .header__inner { height: 100%; display: flex; align-items: center; gap: 1.5rem; }
+
+  .nav { margin-left: auto; }
+  .nav ul { display: flex; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+  .nav a {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border-radius: 8px;
+  }
+  .nav a:hover, .nav a[aria-current='page'] { color: var(--text); }
+  .nav a[aria-current='page'] { box-shadow: inset 0 -2px 0 var(--accent); border-radius: 0; }
+
+  .header__actions { display: flex; align-items: center; gap: 0.75rem; }
+  .header__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .header__cta { min-height: 44px; padding: 0.6em 1.3em; }
+
+  .menu-toggle {
+    display: none;
+    width: 46px;
+    height: 46px;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .menu-toggle :global(.i-close) { display: none; }
+  .is-open .menu-toggle :global(.i-open) { display: none; }
+  .is-open .menu-toggle :global(.i-close) { display: block; }
+
+  @media (max-width: 1080px) {
+    .header__phone span { display: none; }
+  }
+
+  @media (max-width: 860px) {
+    .menu-toggle { display: inline-flex; }
+    .header__cta, .header__phone { display: none; }
+    .header__actions { margin-left: auto; }
+    .nav {
+      position: fixed;
+      inset: var(--header-h) 0 0;
+      margin: 0;
+      padding: 2rem var(--gutter);
+      background: var(--bg);
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.25s, transform 0.25s var(--ease), visibility 0.25s;
+    }
+    .is-open .nav { visibility: visible; opacity: 1; transform: none; }
+    .nav ul { flex-direction: column; gap: 0; }
+    .nav a {
+      padding: 1rem 0;
+      font-family: var(--font-head);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text);
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+    }
+    .nav a[aria-current='page'] { color: var(--accent-hi); box-shadow: none; }
+  }
+</style>
